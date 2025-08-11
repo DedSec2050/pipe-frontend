@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    environment {
+        DEPLOY_DIR = "/home/ubuntu/frontendapp"
+        SERVICE_NAME = "frontendapp"
+        REPO_URL = "https://github.com/DedSec2050/frontendrepo.git" // change to your actual repo
+    }
+    stages {
+        stage('Stop Service') {
+            steps {
+                echo "🛑 Stopping ${SERVICE_NAME}..."
+                sh "sudo systemctl stop ${SERVICE_NAME} || true"
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                echo "📥 Checking out repository..."
+                git branch: 'master', url: "${REPO_URL}"
+            }
+        }
+
+        stage('Deploy to Server Directory') {
+            steps {
+                echo "📂 Deploying to ${DEPLOY_DIR}..."
+                sh """
+                    mkdir -p build_tmp
+                    rsync -av --exclude=build_tmp ./ build_tmp/
+                    sudo rm -rf ${DEPLOY_DIR}
+                    sudo mv build_tmp ${DEPLOY_DIR}
+                    sudo chown -R ubuntu:ubuntu ${DEPLOY_DIR}
+                """
+            }
+        }
+
+        stage('Install Dependencies & Build') {
+            steps {
+                echo "📦 Installing Node dependencies & Building..."
+                sh """
+                    sudo bash -c '
+                        cd ${DEPLOY_DIR}
+                        npm install
+                        npm run build
+                    '
+                """
+            }
+        }
+
+        stage('Start Service') {
+            steps {
+                echo "🚀 Starting ${SERVICE_NAME}..."
+                sh "sudo systemctl start ${SERVICE_NAME}"
+            }
+        }
+    }
+}
