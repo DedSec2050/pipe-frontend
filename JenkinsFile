@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DEPLOY_DIR = "/home/ubuntu/frontendapp"
-        SERVICE_NAME = "frontendapp"
+        SERVICE_NAME = "expressapp"
         REPO_URL = "https://github.com/DedSec2050/frontendrepo.git" // change to your actual repo
     }
     stages {
