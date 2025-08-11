@@ -3,7 +3,7 @@ pipeline {
     environment {
         DEPLOY_DIR = "/home/ubuntu/frontendapp"
         SERVICE_NAME = "expressapp"
-        REPO_URL = "https://github.com/DedSec2050/frontendrepo.git" // change to your actual repo
+        REPO_URL = "https://github.com/DedSec2050/pipe-frontend.git"
     }
     stages {
         stage('Stop Service') {
