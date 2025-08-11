@@ -40,7 +40,6 @@ pipeline {
                     sudo bash -c '
                         cd ${DEPLOY_DIR}
                         npm install
-                        npm run build
                     '
                 """
             }
